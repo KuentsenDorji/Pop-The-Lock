@@ -1,0 +1,176 @@
+import pygame, sys
+import random
+import math
+import colorsys
+import pygame.camera
+from cvzone.FaceMeshModule import FaceMeshDetector
+from PIL import Image as im
+import time
+import threading
+
+pygame.init()
+pygame.camera.init()
+pygame.mixer.init()
+music = pygame.mixer.music.load('Vine-boom-sound-effect.ogg')
+
+detector = FaceMeshDetector(maxFaces=1)
+cam = pygame.camera.Camera("c922 Pro Stream Webcam",(700,800))
+screen = pygame.display.set_mode((1600, 900))
+clock = pygame.time.Clock()
+radius = 225
+deg = 270
+circle = random.randint(int(deg+10)*-1, int(deg-10)*-1)
+speed = 3
+score = 25
+dir = 1
+color = 0
+loss = False
+limit = 1
+font = pygame.font.Font(None, 250, )
+win = False
+timer = 1
+count = 3
+
+def sin(degrees):
+    return (math.sin(math.radians(degrees)))
+
+
+def cos(degrees):
+    return (math.cos(math.radians(degrees)))
+
+def sleeper():
+    global limit
+    while True:
+        if limit == 1:
+            time.sleep(0.7)
+            limit = 0
+        time.sleep(0.1)
+
+cam.start()
+t1 = threading.Thread(target=sleeper, daemon = True)
+t1.start()
+
+while True:
+
+    if loss == False:
+
+        if score == 0:
+            loss = True
+            win = True
+
+        clock.tick(30)
+        image = cam.get_image()
+        view = pygame.surfarray.array3d(image)
+        img, faces = detector.findFaceMesh(view)
+        image = im.fromarray(img)
+        mode = image.mode
+        size = image.size
+        data = image.tobytes()
+
+        if faces:
+            face = faces[0]
+            leftUp = face[0]
+            leftDown = face[14]
+            leftLeft = face[77]
+            leftRight = face[324]
+            vert, _ = detector.findDistance(leftUp, leftDown)
+            hori, _ = detector.findDistance(leftLeft, leftRight)
+            if (vert / hori * 100) <= 35 and limit == 0:
+                player = pygame.Rect(0, 0, 45, 45)
+                player.center = ((400 + radius * cos(deg)), (400 + radius * sin(deg)))
+                q = pygame.Rect(0, 0, 60, 60)
+                q.center = ((400 - radius * cos(circle)), (400 + radius * sin(circle)))
+
+                if pygame.Rect.colliderect(player, q):
+                    pygame.mixer.music.play()
+                    dir *= -1
+                    speed += .1
+                    score -= 1
+                    color += 0.02
+                    circle = random.randint(int(deg + 60) * -1, int(deg - 60) * -1)
+                    limit += 1
+                else:
+                    loss = True
+
+        py_image = pygame.image.fromstring(data, size, mode)
+        py_image = pygame.transform.rotate(py_image, 270)
+
+        color1 = colorsys.hsv_to_rgb(.77 - color, .79, 117)
+        color2 = colorsys.hsv_to_rgb(.77 - color, .8, 64)
+        color3 = colorsys.hsv_to_rgb(.77 - color, .26, 240)
+
+        text = font.render(str(score), False, color3)
+
+        screen.fill(color1)
+        pygame.draw.circle(screen, color2, (400, 400), 275)
+        pygame.draw.circle(screen, color1, (400, 400), 175)
+        pygame.draw.circle(screen, (242, 198, 19), (400 - radius * cos(circle), 400 + radius * sin(circle)), 30)
+
+        d = 187.5
+        d2 = 75
+        x1 = 800 // 2 + d * math.cos(math.radians(deg))
+        y1 = 800 // 2 + d * math.sin(math.radians(deg))
+        x2 = x1 + d2 * math.cos(math.radians(deg))
+        y2 = y1 + d2 * math.sin(math.radians(deg))
+
+        pygame.draw.line(screen, (227, 18, 81), (x1, y1), (x2, y2), 15)
+        text_rect = text.get_rect(center=(400, 400))
+        screen.blit(text, (text_rect))
+        screen.blit(py_image, (700, 100))
+
+        player = pygame.Rect((400 + radius * cos(deg)), (400 + radius * sin(deg)), 15, 15)
+        player.center = ((400 + radius * cos(deg)), (400 + radius * sin(deg)))
+
+        p = pygame.Rect((400 + radius * cos(circle)), (400 - radius * sin(circle)), 30, 30)
+        p.center = ((400 - radius * cos(circle - dir * 25)), (400 + radius * sin(circle - dir * 20)))
+        if pygame.Rect.colliderect(player, p):
+            loss = True
+
+        deg = ((dir * speed) + deg) % 360
+        pygame.display.update()
+
+        if timer == 1:
+            timer = 0
+
+    else:
+
+        screen.fill(color1)
+        pygame.draw.circle(screen, color2, (400, 400), 275)
+        pygame.draw.circle(screen, color1, (400, 400), 175)
+        font = pygame.font.Font(None, 50)
+        text_rect = text.get_rect(center=(400, 400))
+        if score == 0:
+            text = font.render('You Won!',False,color3)
+        else:
+            text = font.render('You Lost :(',False,color3)
+
+        screen.blit(text,(text_rect))
+        font1 = pygame.font.Font(None, 100)
+        text1 = font1.render('Click to  Restart', False, color3)
+        text_rect1 = text.get_rect(center=(900, 800))
+        screen.blit(text1, (text_rect1))
+        image = cam.get_image()
+        view = pygame.surfarray.array3d(image)
+        img, faces = detector.findFaceMesh(view)
+        image = im.fromarray(img)
+        mode = image.mode
+        size = image.size
+        data = image.tobytes()
+        py_image = pygame.image.fromstring(data, size, mode)
+        py_image = pygame.transform.rotate(py_image, 270)
+        screen.blit(py_image, (700, 100))
+        pygame.display.update()
+
+
+
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                speed = 3
+                score = 25
+                dir = 1
+                color = 0
+                loss = False
+                deg = 270
+                circle = random.randint(int(deg + 10) * -1, int(deg - 10) * -1)
+                font = pygame.font.Font(None, 250, )

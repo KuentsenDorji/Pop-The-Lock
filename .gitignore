@@ -1,0 +1,19 @@
+.venv/
+
+.idea/
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN /
+
+.DS_Store
+.DS_Store?
+._*
+.Trashes
+
+.env
