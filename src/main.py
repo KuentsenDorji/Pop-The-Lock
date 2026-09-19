@@ -5,7 +5,7 @@ from welcome_window import WelcomeWindow
 
 def main():
     pygame.init()
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.SCALED, vsync=1)
     clock = pygame.time.Clock()
     scene = WelcomeWindow()
 
@@ -23,7 +23,7 @@ def main():
         scene.draw(screen)
 
         pygame.display.update()
-        clock.tick(30)
+        clock.tick(60)
 
 
 if __name__ == '__main__':

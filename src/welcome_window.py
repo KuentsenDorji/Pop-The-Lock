@@ -1,7 +1,5 @@
 import pygame
-from game_window import GameWindow
 import colorsys
-
 
 class WelcomeWindow:
 
@@ -16,6 +14,7 @@ class WelcomeWindow:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
+                from game_window import GameWindow
                 self.next_scene = GameWindow()
 
     def update(self):
