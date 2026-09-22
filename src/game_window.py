@@ -1,10 +1,9 @@
 import pygame
 import colorsys
-from config import RADIUS, SCREEN_HEIGHT, SCREEN_WIDTH, PLAYER_LENGTH
-import math
-import random
+from config import SCREEN_HEIGHT, SCREEN_WIDTH, RADIUS_OUTER, RADIUS_INNER
 from player import Player
-from utils import sin, cos
+from points import Point
+from utils import get_hsv_color
 
 class GameWindow:
     def __init__(self):
@@ -12,27 +11,26 @@ class GameWindow:
         self.next_scene = False
 
         self.color = 0
-        self.color1 = colorsys.hsv_to_rgb(.77 - self.color, .79, 117)
-        self.color2 = colorsys.hsv_to_rgb(.77 - self.color, .8, 64)
-        self.color3 = colorsys.hsv_to_rgb(.77 - self.color, .26, 240)
+        self.color1 = get_hsv_color(.77 - self.color, .79, 117)
+        self.color2 = get_hsv_color(.77 - self.color, .8, 64)
+        self.color3 = get_hsv_color(.77 - self.color, .26, 240)
         self.color4 = (242, 198, 19)
 
         self.font = pygame.font.Font(None, 50, )
-        self.degree_point = random.randint(50, 360)
-
-        self.circle_x = 500 + RADIUS * cos(self.degree_point)
-        self.circle_y = 350 + RADIUS * sin(self.degree_point)
+        self.text=self.font.render(f"Score: {0}", False, self.color3)
+        self.text_rect = self.text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT-100))
 
         self.player = Player()
+        self.point = Point()
 
-        self.point_hitbox = pygame.Rect(0, 0, 60, 60)
-        self.point_hitbox.center = (int(500 + RADIUS * cos(self.degree_point)),int(350 + RADIUS * sin(self.degree_point)))
+        self.center_circle_pos = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2-50)
+
 
     def handle_events(self, event):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                if self.player.check_collision(self.point_hitbox):
+                if self.player.check_collision(self.point.get_point_hitbox()):
 
                     self.player.update_speed()
                     self.player.update_score()
@@ -40,18 +38,17 @@ class GameWindow:
 
                     degrees = self.player.get_degrees()
 
-                    self.degree_point = GameWindow.random_point(int(degrees))
-                    self.circle_x = 500 + RADIUS * cos(self.degree_point)
-                    self.circle_y = 350 + RADIUS * sin(self.degree_point)
-
-                    self.point_hitbox.center = (int(500 + RADIUS * cos(self.degree_point)),
-                                                int(350 + RADIUS * sin(self.degree_point)))
+                    self.point.set_random_degrees(int(degrees))
+                    self.point.update()
 
                     self.color += 0.009
 
-                    self.color1 = colorsys.hsv_to_rgb(.77 - self.color, .79, 117)
-                    self.color2 = colorsys.hsv_to_rgb(.77 - self.color, .8, 64)
-                    self.color3 = colorsys.hsv_to_rgb(.77 - self.color, .26, 240)
+                    self.color1 = get_hsv_color(.77 - self.color, .79, 117)
+                    self.color2 = get_hsv_color(.77 - self.color, .8, 64)
+                    self.color3 = get_hsv_color(.77 - self.color, .26, 240)
+
+                    score = self.player.get_score()
+                    self.text = self.font.render(f"Score: {score}", False, self.color3)
 
                 else:
                     score = self.player.get_score()
@@ -62,42 +59,19 @@ class GameWindow:
 
     def draw(self, screen):
 
-        score = self.player.get_score()
-        text=self.font.render(f"Score: {score}", False, self.color3)
-        text_rect = text.get_rect(center=(500, 700))
         screen.fill(self.color1)
 
-        screen.blit(text, text_rect)
+        screen.blit(self.text, self.text_rect)
 
-        pygame.draw.circle(screen, self.color2, (500, 350), 275)
-        pygame.draw.circle(screen, self.color1, (500, 350), 175)
+        pygame.draw.circle(screen, self.color2, self.center_circle_pos, RADIUS_OUTER)
+        pygame.draw.circle(screen, self.color1, self.center_circle_pos, RADIUS_INNER)
 
         self.player.draw(screen)
 
-        pygame.draw.circle(screen, self.color4, (self.circle_x, self.circle_y), 30)
+        self.point.draw(screen, self.color4)
 
     def get_next_scene(self):
         return self.next_scene
 
-    @staticmethod
-    def random_point(degrees):
-        if degrees-50 <= 0:
-            lowerbound = 50
-            upperbound = 360
-            return random.randint(lowerbound, upperbound)
-        elif degrees+50 >= 360:
-            lowerbound = 0
-            upperbound = 360-50
-            return random.randint(lowerbound, upperbound)
-        else:
-            lowerbound1 = 0
-            upperbound1 = degrees-50
-            lowerbound2 = degrees+50
-            upperbound2 = 360
-            choice = random.randint(0, 1)
-            if choice == 0:
-                return random.randint(lowerbound1, upperbound1)
-            else:
-                return random.randint(lowerbound2, upperbound2)
 
 

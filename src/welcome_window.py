@@ -1,15 +1,16 @@
 import pygame
 import colorsys
 from config import RADIUS_OUTER, RADIUS_INNER, SCREEN_WIDTH, SCREEN_HEIGHT
+from utils import get_hsv_color
 
 class WelcomeWindow:
 
     def __init__(self):
         self.next_scene = False
 
-        self.color1 = colorsys.hsv_to_rgb(.77, .79, 117)
-        self.color2 = colorsys.hsv_to_rgb(.77, .8, 64)
-        self.color3 = colorsys.hsv_to_rgb(.77, .26, 240)
+        self.color1 = get_hsv_color(.77, .79, 117)
+        self.color2 = get_hsv_color(.77, .8, 64)
+        self.color3 = get_hsv_color(.77, .26, 240)
 
         self.font = pygame.font.Font(None, 50, )
 

@@ -1,5 +1,5 @@
 import pygame
-import colorsys
+from config import SCREEN_HEIGHT, SCREEN_WIDTH
 
 class EndWindow:
 
@@ -12,11 +12,11 @@ class EndWindow:
         self.font = pygame.font.Font(None, 50, )
         self.font2 = pygame.font.Font(None, 80, )
         self.text_begin = self.font.render(f"Score: {self.score}", False, self.color3)
-        self.text_begin_rect = self.text_begin.get_rect(center=(500, 700))
+        self.text_begin_rect = self.text_begin.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT-100))
         self.text_GO = self.font2.render("GAME OVER", False, self.color3)
-        self.text_GO_rect = self.text_GO.get_rect(center=(500, 400))
+        self.text_GO_rect = self.text_GO.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2))
         self.text_again = self.font.render("Press Space to Play Again", False, self.color3)
-        self.text_again_rect = self.text_again.get_rect(center=(500, 500))
+        self.text_again_rect = self.text_again.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2+100))
 
     def handle_events(self, event):
 
