@@ -1,6 +1,5 @@
 import pygame
-import colorsys
-from config import SCREEN_HEIGHT, SCREEN_WIDTH, RADIUS_OUTER, RADIUS_INNER
+from config import SCREEN_HEIGHT, SCREEN_WIDTH, RADIUS_OUTER, RADIUS_INNER, SCREEN_CENTER_X, SCREEN_CENTER_Y, COLOR1, COLOR2, COLOR3, COLOR4, COLOR_CHANGE
 from player import Player
 from points import Point
 from utils import get_hsv_color
@@ -8,50 +7,43 @@ from utils import get_hsv_color
 class GameWindow:
     def __init__(self):
         # Every scene starts with no next scene queued up
-        self.next_scene = False
+        self.next_scene = None
 
-        self.color = 0
-        self.color1 = get_hsv_color(.77 - self.color, .79, 117)
-        self.color2 = get_hsv_color(.77 - self.color, .8, 64)
-        self.color3 = get_hsv_color(.77 - self.color, .26, 240)
-        self.color4 = (242, 198, 19)
+        self.hue = COLOR1[0]
+        self.update_colors()
 
-        self.font = pygame.font.Font(None, 50, )
-        self.text=self.font.render(f"Score: {0}", False, self.color3)
-        self.text_rect = self.text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT-100))
+        self.font = pygame.font.Font(None, 50)
+        self.text = self.font.render(f"Score: {0}",False, self.color3)
+        self.text_rect = self.text.get_rect(center=(SCREEN_CENTER_X, SCREEN_HEIGHT-100))
 
         self.player = Player()
         self.point = Point()
 
-        self.center_circle_pos = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2-50)
+        self.center_circle_pos = (SCREEN_CENTER_X, SCREEN_CENTER_Y)
 
 
     def handle_events(self, event):
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                if self.player.check_collision(self.point.get_point_hitbox()):
+                if self.player.check_collision(self.point.point_hitbox):
 
-                    self.player.update_speed()
-                    self.player.update_score()
-                    self.player.update_direction()
+                    self.player.score_point()
 
-                    degrees = self.player.get_degrees()
+                    degrees = self.player.degrees
 
                     self.point.set_random_degrees(int(degrees))
                     self.point.update()
 
-                    self.color += 0.009
+                    self.hue -= COLOR_CHANGE
 
-                    self.color1 = get_hsv_color(.77 - self.color, .79, 117)
-                    self.color2 = get_hsv_color(.77 - self.color, .8, 64)
-                    self.color3 = get_hsv_color(.77 - self.color, .26, 240)
+                    self.update_colors()
 
-                    score = self.player.get_score()
+                    score = self.player.score
                     self.text = self.font.render(f"Score: {score}", False, self.color3)
 
                 else:
-                    score = self.player.get_score()
+                    score = self.player.score
                     self.next_scene = ["END", (self.color1, self.color2, self.color3, score)]
 
     def update(self):
@@ -68,10 +60,15 @@ class GameWindow:
 
         self.player.draw(screen)
 
-        self.point.draw(screen, self.color4)
+        self.point.draw(screen, COLOR4)
 
     def get_next_scene(self):
         return self.next_scene
+
+    def update_colors(self):
+        self.color1 = get_hsv_color(self.hue, COLOR1[1], COLOR1[2])
+        self.color2 = get_hsv_color(self.hue, COLOR2[1], COLOR2[2])
+        self.color3 = get_hsv_color(self.hue, COLOR3[1], COLOR3[2])
 
 
 

@@ -1,23 +1,22 @@
 import pygame
-import colorsys
-from config import RADIUS_OUTER, RADIUS_INNER, SCREEN_WIDTH, SCREEN_HEIGHT
+from config import RADIUS_OUTER, RADIUS_INNER, SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_CENTER_X, SCREEN_CENTER_Y, COLOR1, COLOR2, COLOR3
 from utils import get_hsv_color
 
 class WelcomeWindow:
 
     def __init__(self):
-        self.next_scene = False
+        self.next_scene = None
 
-        self.color1 = get_hsv_color(.77, .79, 117)
-        self.color2 = get_hsv_color(.77, .8, 64)
-        self.color3 = get_hsv_color(.77, .26, 240)
+        self.color1 = get_hsv_color(*COLOR1)
+        self.color2 = get_hsv_color(*COLOR2)
+        self.color3 = get_hsv_color(*COLOR3)
 
         self.font = pygame.font.Font(None, 50, )
 
         self.text=self.font.render("Click Space to Begin", False, self.color3)
-        self.text_rect = self.text.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT-100))
+        self.text_rect = self.text.get_rect(center=(SCREEN_CENTER_X, SCREEN_HEIGHT-100))
 
-        self.circle_center = (SCREEN_WIDTH//2, SCREEN_HEIGHT//2-50)
+        self.circle_center = (SCREEN_CENTER_X, SCREEN_CENTER_Y)
 
     def handle_events(self, event):
 
