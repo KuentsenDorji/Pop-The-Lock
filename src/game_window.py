@@ -8,45 +8,69 @@ class GameWindow:
     def __init__(self):
         # Every scene starts with no next scene queued up
         self.next_scene = False
-        self.color1 = colorsys.hsv_to_rgb(.77, .79, 117)
-        self.color2 = colorsys.hsv_to_rgb(.77, .8, 64)
-        self.color3 = colorsys.hsv_to_rgb(.77, .26, 240)
+        self.color = 0
+        self.color1 = colorsys.hsv_to_rgb(.77 - self.color, .79, 117)
+        self.color2 = colorsys.hsv_to_rgb(.77 - self.color, .8, 64)
+        self.color3 = colorsys.hsv_to_rgb(.77 - self.color, .26, 240)
         self.color4 = (242, 198, 19)
+
         self.font = pygame.font.Font(None, 50, )
         self.score = 0
         self.degrees = 0
         self.degree_point = random.randint(50, 360)
+
         self.circle_x = 500 + RADIUS * GameWindow.cos(self.degree_point)
         self.circle_y = 350 + RADIUS * GameWindow.sin(self.degree_point)
-        self.speed = 3
+
+        self.speed = 2
         self.direction = 1
+
         self.line_x1 = 500 + (1 * GameWindow.cos(self.degrees))
         self.line_y1 = 350 + (1 * GameWindow.sin(self.degrees))
         self.line_x2 = self.line_x1 + (75 * GameWindow.cos(self.degrees))
         self.line_y2 = self.line_y1 + (75 * GameWindow.sin(self.degrees))
-        self.direction = 1
+
+        self.player_hitbox = pygame.Rect(0, 0, 45, 45)
+        self.player_hitbox.center = (int(500 + RADIUS * GameWindow.cos(self.degrees)), int(350 + RADIUS * GameWindow.sin(self.degrees)))
+
+        self.point_hitbox = pygame.Rect(0, 0, 60, 60)
+        self.point_hitbox.center = (int(500 + RADIUS * GameWindow.cos(self.degree_point)),int(350 + RADIUS * GameWindow.sin(self.degree_point)))
 
     def handle_events(self, event):
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 if self.check_collision():
                     self.direction *= -1
-                    self.speed += 0.2
                     self.degree_point = GameWindow.random_point(int(self.degrees))
                     self.circle_x = 500 + RADIUS * GameWindow.cos(self.degree_point)
                     self.circle_y = 350 + RADIUS * GameWindow.sin(self.degree_point)
                     self.score += 1
+                    self.point_hitbox.center = (int(500 + RADIUS * GameWindow.cos(self.degree_point)),
+                                                int(350 + RADIUS * GameWindow.sin(self.degree_point)))
+
+                    self.color += 0.009
+
+                    self.color1 = colorsys.hsv_to_rgb(.77 - self.color, .79, 117)
+                    self.color2 = colorsys.hsv_to_rgb(.77 - self.color, .8, 64)
+                    self.color3 = colorsys.hsv_to_rgb(.77 - self.color, .26, 240)
+
+                    GameWindow.update_speed(self)
+
                 else:
-                    from welcome_window import WelcomeWindow
-                    self.next_scene = WelcomeWindow()
+                    from end_window import EndWindow
+                    self.next_scene = EndWindow(self.color1, self.color2, self.color3, self.score)
 
     def update(self):
         # Calculate game math, timers, and collisions
         self.degrees = ((self.direction * self.speed) + self.degrees) % 360
+
         self.line_x1 = 500 + (190 * GameWindow.cos(self.degrees))
         self.line_y1 = 350 + (190 * GameWindow.sin(self.degrees))
         self.line_x2 = self.line_x1 + (70 * GameWindow.cos(self.degrees))
         self.line_y2 = self.line_y1 + (70 * GameWindow.sin(self.degrees))
+
+        self.player_hitbox.center = (int(500 + RADIUS * GameWindow.cos(self.degrees)),
+                                     int(350 + RADIUS * GameWindow.sin(self.degrees)))
 
     def draw(self, screen):
         # Draw everything onto the canvas
@@ -92,6 +116,12 @@ class GameWindow:
                 return random.randint(lowerbound2, upperbound2)
 
     def check_collision(self):
-        if abs(self.degree_point-self.degrees) < 15:
+        if pygame.Rect.colliderect(self.player_hitbox, self.point_hitbox):
             return True
         return False
+
+    def update_speed(self):
+        if self.speed < 12:
+            self.speed += 0.2
+        else:
+            pass

@@ -2,6 +2,8 @@ import sys
 import pygame
 from config import WIDTH, HEIGHT
 from welcome_window import WelcomeWindow
+from game_window import GameWindow
+from end_window import EndWindow
 
 def main():
     pygame.init()
@@ -21,7 +23,6 @@ def main():
 
         scene.update()
         scene.draw(screen)
-
         pygame.display.update()
         clock.tick(60)
 
