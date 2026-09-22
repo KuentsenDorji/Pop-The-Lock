@@ -22,8 +22,7 @@ class EndWindow:
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                from game_window import GameWindow
-                self.next_scene = GameWindow()
+                self.next_scene = ["GAME"]
 
     def update(self):
         pass
