@@ -44,8 +44,8 @@ class Player:
         self.update_speed()
 
     def update_speed(self):
-        if self.speed < 12:
-            self.speed += 0.2
+        if self.speed < 10:
+            self.speed += 0.1
         else:
             pass
 

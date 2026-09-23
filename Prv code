@@ -174,3 +174,126 @@ while True:
                 deg = 270
                 circle = random.randint(int(deg + 10) * -1, int(deg - 10) * -1)
                 font = pygame.font.Font(None, 250, )
+
+
+
+
+
+import pygame.camera
+
+from cvzone.FaceMeshModule import FaceMeshDetector
+
+from PIL import Image as im
+
+from config import SCREEN_WIDTH, SCREEN_HEIGHT, CAMERA_RESOLUTION, MOUTH_THRESHOLD
+
+import pygame
+
+
+
+class FaceTracker:
+
+def __init__(self):
+
+pygame.camera.init()
+
+self.init_camera()
+
+self.camera.start()
+
+self.detector = FaceMeshDetector(maxFaces=1)
+
+self.faces = None
+
+self.face_screen = None
+
+self.timer = 0
+
+
+
+def init_camera(self):
+
+cameras = pygame.camera.list_cameras()
+
+if cameras:
+
+self.camera = pygame.camera.Camera(cameras[0], CAMERA_RESOLUTION)
+
+else:
+
+raise RuntimeError("No cameras detected")
+
+
+
+def update(self):
+
+self.timer_ready = False
+
+image = self.camera.get_image()
+
+view = pygame.surfarray.array3d(image)
+
+img, self.faces = self.detector.findFaceMesh(view)
+
+image = im.fromarray(img)
+
+mode = image.mode
+
+size = image.size
+
+data = image.tobytes()
+
+py_image = pygame.image.fromstring(data, size, mode)
+
+self.face_screen = pygame.transform.rotate(py_image, 270)
+
+
+
+def draw(self, screen):
+
+screen.blit(self.face_screen, (SCREEN_WIDTH-CAMERA_RESOLUTION[0], SCREEN_HEIGHT-CAMERA_RESOLUTION[1]))
+
+
+
+def win_con(self):
+
+
+
+if self.faces and self.timer_ready():
+
+face = self.faces[0]
+
+upper_lip = face[0]
+
+lower_lip = face[14]
+
+left_eye = face[77]
+
+right_eye = face[324]
+
+vert, _ = self.detector.findDistance(upper_lip, lower_lip)
+
+hori, _ = self.detector.findDistance(left_eye, right_eye)
+
+ratio_mouth_closed = vert / hori * 100
+
+if ratio_mouth_closed <= MOUTH_THRESHOLD:
+
+self.timer = pygame.time.get_ticks()
+
+return True
+
+else:
+
+return False
+
+
+
+return False
+
+
+
+def timer_ready(self):
+
+return pygame.time.get_ticks() - self.timer >= 500
+

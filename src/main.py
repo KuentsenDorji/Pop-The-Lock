@@ -1,15 +1,17 @@
 import sys
 import pygame
-from config import SCREEN_HEIGHT, SCREEN_WIDTH
+from config import SCREEN_HEIGHT, SCREEN_WIDTH, FPS
 from welcome_window import WelcomeWindow
 from game_window import GameWindow
 from end_window import EndWindow
+from face_tracking import FaceTracker
 
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED, vsync=1)
     clock = pygame.time.Clock()
-    scene = WelcomeWindow()
+    face_tracker = FaceTracker()
+    scene = WelcomeWindow(face_tracker)
 
     scenes = {
         "WELCOME": WelcomeWindow,
@@ -18,24 +20,28 @@ def main():
     }
 
     while True:
+
         for event in pygame.event.get():
             scene.handle_events(event)
             if event.type == pygame.QUIT:
+                face_tracker.camera.stop()
+                face_tracker.cleanup()
                 pygame.quit()
                 sys.exit()
+
+
+        scene.handle_camera()
+        scene.update()
+        scene.draw(screen)
+        pygame.display.update()
 
         next_scene_name = scene.get_next_scene()
 
         if next_scene_name:
-            if len(next_scene_name) == 1:
-                scene = scenes[next_scene_name[0]]()
-            else:
-                scene = scenes[next_scene_name[0]](*next_scene_name[1])
+            scene = scenes[next_scene_name[0]](*next_scene_name[1])
 
-        scene.update()
-        scene.draw(screen)
-        pygame.display.update()
-        clock.tick(60)
+
+        clock.tick(FPS)
 
 
 if __name__ == '__main__':
