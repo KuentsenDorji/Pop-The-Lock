@@ -1,5 +1,5 @@
 import pygame
-from config import SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_CENTER_X, SCREEN_CENTER_Y, TEXT_Y
+from config import SCREEN_CENTER_X, SCREEN_CENTER_Y, TEXT_Y
 
 class EndWindow:
 
@@ -26,7 +26,7 @@ class EndWindow:
                 self.next_scene = ["GAME", [self.face_tracker]]
 
     def update(self):
-        self.face_tracker.update()
+        pass
 
     def draw(self, screen):
 

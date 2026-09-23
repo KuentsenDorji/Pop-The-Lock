@@ -1,5 +1,5 @@
 import pygame
-from config import RADIUS_OUTER, RADIUS_INNER, SCREEN_HEIGHT, SCREEN_CENTER_X, SCREEN_CENTER_Y, COLOR1, COLOR2, COLOR3, TEXT_Y
+from config import RADIUS_OUTER, RADIUS_INNER, SCREEN_CENTER_X, SCREEN_CENTER_Y, COLOR1, COLOR2, COLOR3, TEXT_Y
 from utils import get_hsv_color
 
 class WelcomeWindow:
@@ -28,7 +28,7 @@ class WelcomeWindow:
                 self.next_scene = ["GAME", [self.face_tracker]]
 
     def update(self):
-        self.face_tracker.update()
+        pass
 
         if self.face_tracker.is_ready():
             self.text_value = "Click Space to Begin!"

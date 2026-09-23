@@ -5,13 +5,20 @@ from welcome_window import WelcomeWindow
 from game_window import GameWindow
 from end_window import EndWindow
 from face_tracking import FaceTracker
+from utils import load_sound
 
 def main():
     pygame.init()
+    pygame.mixer.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SCALED, vsync=1)
     clock = pygame.time.Clock()
     face_tracker = FaceTracker()
     scene = WelcomeWindow(face_tracker)
+
+    pygame.mixer.music.load(load_sound("Music.mp3"))
+
+    pygame.mixer.music.play(loops=-1)
+    pygame.mixer.music.set_volume(0.3)
 
     scenes = {
         "WELCOME": WelcomeWindow,

@@ -1,2 +1,6 @@
 
 pygame
+
+opencv-python
+
+cvzone

@@ -1,13 +1,15 @@
 import pygame
-from config import SCREEN_HEIGHT, SCREEN_WIDTH, RADIUS_OUTER, RADIUS_INNER, SCREEN_CENTER_X, SCREEN_CENTER_Y, COLOR1, COLOR2, COLOR3, COLOR4, COLOR_CHANGE, TEXT_Y
+from config import RADIUS_OUTER, RADIUS_INNER, SCREEN_CENTER_X, SCREEN_CENTER_Y, COLOR1, COLOR2, COLOR3, COLOR4, COLOR_CHANGE, TEXT_Y
 from player import Player
 from points import Point
-from utils import get_hsv_color
+from utils import get_hsv_color, load_sound
 
 class GameWindow:
     def __init__(self, face_tracker):
-        # Every scene starts with no next scene queued up
+
         self.next_scene = None
+
+        self.face_tracker = face_tracker
 
         self.hue = COLOR1[0]
         self.update_colors()
@@ -20,7 +22,10 @@ class GameWindow:
         self.point = Point()
 
         self.center_circle_pos = (SCREEN_CENTER_X, SCREEN_CENTER_Y)
-        self.face_tracker = face_tracker
+
+        self.score_sound = pygame.mixer.Sound(load_sound("BubblePop.mp3"))
+
+        self.score_sound.set_volume(1)
 
 
     def handle_events(self, event):
@@ -28,7 +33,6 @@ class GameWindow:
 
     def update(self):
         self.player.update()
-        self.face_tracker.update()
 
     def draw(self, screen):
 
@@ -52,11 +56,14 @@ class GameWindow:
         self.color1 = get_hsv_color(self.hue, COLOR1[1], COLOR1[2])
         self.color2 = get_hsv_color(self.hue, COLOR2[1], COLOR2[2])
         self.color3 = get_hsv_color(self.hue, COLOR3[1], COLOR3[2])
+        self.face_tracker.update_color(self.hue)
 
     def handle_camera(self):
         if self.face_tracker.win_con():
 
             if self.player.check_collision(self.point.point_hitbox):
+
+                self.score_sound.play()
 
                 self.player.score_point()
 

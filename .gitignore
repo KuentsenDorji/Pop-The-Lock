@@ -19,3 +19,7 @@ $RECYCLE.BIN /
 .env
 
 face_landmarker.task
+
+dist/
+build/
+main.spec
