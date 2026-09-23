@@ -6,7 +6,7 @@ A webcam based, gesture controlled arcade game built with Python and Pygame. Ins
 
 
 
-[<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/b0b5e4d8-0f7a-4f13-987e-b3a2b1e2c826" />](https://s7.ezgif.com/tmp/ezgif-71762db1f6d70767.gif)
+<img width="250" height="187" alt="20260923060330_250x187_f630b22f-1129-4311-b375-9af170d1c9eb-render" src="https://github.com/user-attachments/assets/92ae4481-7c9d-4be9-9461-3ab31d19077e" />
 
 
 
