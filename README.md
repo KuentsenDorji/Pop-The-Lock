@@ -1,5 +1,7 @@
 # 🔓 Pop the Lock: Face Controlled Edition 🎮
 
+### Download: https://github.com/KuentsenDorji/Pop-The-Lock/releases/tag/v.1.0.0
+
 A webcam based, gesture controlled arcade game built with Python and Pygame. Instead of tapping a keyboard or clicking a mouse, the player controls the game with real time face tracking using their webcam and the closing/opening of their mouth to collect points. 
 
 **The Goal:** The classic Pop the Lock mechanic, but driven by computer vision. Wait for the rotating indicator to hit the target, then **close your mouth** to score a point and reverse direction. Miss the target, and it's game over!
