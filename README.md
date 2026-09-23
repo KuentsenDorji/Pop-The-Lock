@@ -5,7 +5,9 @@
 A webcam based, gesture controlled arcade game built with Python and Pygame. Instead of tapping a keyboard or clicking a mouse, the player controls the game with real time face tracking using their webcam and the closing/opening of their mouth to collect points. 
 
 
-<img width="314" height="236" alt="Adobe Express - f630b22f-1129-4311-b375-9af170d1c9eb-render" src="https://github.com/user-attachments/assets/ed113f60-c252-4d1d-bae4-2bd798b78965" />
+
+[<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/b0b5e4d8-0f7a-4f13-987e-b3a2b1e2c826" />](https://s7.ezgif.com/tmp/ezgif-71762db1f6d70767.gif)
+
 
 
 **The Goal:** The classic Pop the Lock mechanic, but driven by computer vision. Wait for the rotating indicator to hit the target, then **close your mouth** to score a point and reverse direction. Miss the target, and it's game over!
